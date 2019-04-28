@@ -66,7 +66,6 @@ public class GameMutator : MonoBehaviour
         {
             if (game_state.map[point.x, point.y].plant != null)
             {
-                Debug.Log("destroy I swear");
                 Destroy(game_state.map[point.x, point.y].plant.gameObject);
             }
             game_state.map[point.x, point.y].plant = instance.GetComponent<Plant>();
@@ -107,10 +106,13 @@ public class GameMutator : MonoBehaviour
     // This grows babies or reduces cooldowns.
     public void Tick(Organism organism)
     {
+        // TODO: Move to accelerate.
+        /*
         if (game_state.life_force <= 0)
         {
             throw new System.InvalidOperationException("Life force already at zero, cannot accelerate growth.");
         }
+        */
         
         if (organism.turns_remaining_as_baby > 0)
         {
@@ -122,11 +124,16 @@ public class GameMutator : MonoBehaviour
         } else if (organism.reproduction_cooldown > 0)
         {
             organism.reproduction_cooldown--;
-        } else
+        }
+
+        // TODO: Move to accelerate;
+        /*
+        else
         {
             throw new System.InvalidOperationException(string.Format("There is nothing to accelerate for {0}", organism));
         }
         game_state.life_force--;
+        */
     }
 
     // TODO
@@ -159,5 +166,25 @@ public class GameMutator : MonoBehaviour
                 SetOrganism(OrganismType.Barren, new Point(x, y));
             }
         }
+    }
+
+    public List<Tile> GetNeighbors(Tile t)
+    {
+        List<Tile> neighbors = new List<Tile>();
+        bool is_even = (t.hex_coords.x % 2 == 0);
+        int[,] offsets = is_even ? Constants.offset_directions_even : Constants.offset_directions_odd;
+        for (int offset_index = 0; offset_index < offsets.GetLength(0); offset_index++)
+        {
+            Point combined = new Point(t.hex_coords.x + offsets[offset_index, 0], t.hex_coords.y + offsets[offset_index, 1]);
+            if (combined.x >= game_state.map.GetLength(0) || 
+                combined.y >= game_state.map.GetLength(1) || 
+                combined.x < 0 ||
+                combined.y < 0)
+            {
+                continue;
+            }
+            neighbors.Add(game_state.map[combined.x, combined.y]);
+        }
+        return neighbors;
     }
 }

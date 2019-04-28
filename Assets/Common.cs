@@ -8,6 +8,12 @@ public class Constants
 {
     public const int TILES_LAYER_MASK = 1 << 8;
     public const int LIFE_FORCE_CAPACITY = 5;
+    public static int[,] offset_directions_even = {
+        {0, 1}, {0, -1}, {1, 0}, {1, -1}, {-1, 0}, {-1, -1}
+    };
+    public static int[,] offset_directions_odd = {
+        {0, 1}, {0, -1}, {1, 1}, {1, 0}, {-1, 0}, {-1, 1}
+    };
 }
 
 public class Helpers
